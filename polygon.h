@@ -29,25 +29,25 @@ class Vertex {
 
 class Polygon {
     private:
-        vector<Vertex> ngonVertices;
+        vector<Vertex> pgonVertices;
 
     public:
         Polygon() {};
         ~Polygon() {};
 
         int getVertexCount() const {
-            return ngonVertices.size();
+            return pgonVertices.size();
         }
 
         vector<Vertex>& getVertices() {
-            return ngonVertices;
+            return pgonVertices;
         }
 
         // Addition of vertices assumes that vertex is the
         // next logical connecting vertex in the polygon.
         void addVertex(double _x, double _y) {
             Vertex newVert = Vertex(_x, _y);
-            ngonVertices.push_back(newVert);
+            pgonVertices.push_back(newVert);
         }
 
         void addVertexAtIndex(double _x, double _y, int index) {

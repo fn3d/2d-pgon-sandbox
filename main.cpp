@@ -3,7 +3,7 @@
 #include "polygon.h"
 #include "tests.h"
 
-using namespace GeomUtils;  
+using namespace GeomUtils;
 
 int main() {
 
@@ -20,7 +20,7 @@ int main() {
     poly.addVertex(1.3, 3.8);
     poly.addVertex(1.7, 4.4);
 
-    vector<vector<double>> intersections = computeNgonIntersections(rect, poly);
+    vector<vector<double>> intersections = computePgonIntersections(rect, poly);
     cout << "Number of intersections: " + to_string(intersections.size());
     cout << "\n\n";
     for (int i = 0; i < intersections.size(); i++) {

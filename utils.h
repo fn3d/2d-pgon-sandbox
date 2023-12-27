@@ -63,26 +63,26 @@ namespace GeomUtils {
         return result;
     }
     
-    vector<vector<double>> computeNgonIntersections(Polygon &ngon1, Polygon &ngon2) {
+    vector<vector<double>> computePgonIntersections(Polygon &pgon1, Polygon &pgon2) {
         vector<vector<double>> foundIntersections;
-        vector<Vertex>* ngon1Vertices = &ngon1.getVertices();
+        vector<Vertex>* pgon1Vertices = &pgon1.getVertices();
         // using each edge of theW first polygon, and comparing with each
         // edge of the second polygon to determine intersections.
-        for (int i = 0; i < ngon1Vertices->size(); i++) {
+        for (int i = 0; i < pgon1Vertices->size(); i++) {
             // we need to eliminate not intersecting edges in the second polygon
             // from the intersection search algorithm for computation efficiency.
             vector<int> edgesToEliminate;
-            Vertex currVert = (*ngon1Vertices)[i];
-            Vertex nextVert = (i != ngon1Vertices->size() - 1) ? 
-                (*ngon1Vertices)[i + 1] : (*ngon1Vertices)[0];
-            vector<Vertex>* ngon2Vertices = &ngon2.getVertices();
-            for (int j = 0; j < ngon2Vertices->size(); j++) {
+            Vertex currVert = (*pgon1Vertices)[i];
+            Vertex nextVert = (i != pgon1Vertices->size() - 1) ? 
+                (*pgon1Vertices)[i + 1] : (*pgon1Vertices)[0];
+            vector<Vertex>* pgon2Vertices = &pgon2.getVertices();
+            for (int j = 0; j < pgon2Vertices->size(); j++) {
                 //auto iterator = find(edgesToEliminate.begin(), edgesToEliminate.end(), j);
                 //if (iterator == edgesToEliminate.end()) {
                 vector<double> intersection;
-                Vertex currVert2 = (*ngon2Vertices)[j];
-                Vertex nextVert2 = (j != ngon2Vertices->size() - 1) ? 
-                    (*ngon2Vertices)[j + 1] : (*ngon2Vertices)[0];
+                Vertex currVert2 = (*pgon2Vertices)[j];
+                Vertex nextVert2 = (j != pgon2Vertices->size() - 1) ? 
+                    (*pgon2Vertices)[j + 1] : (*pgon2Vertices)[0];
                 intersectionResult result = computeIntersection(&currVert, &nextVert, 
                                                     &currVert2, &nextVert2);
                 if ((result.determinantCheck != 0.0) && 
@@ -101,19 +101,19 @@ namespace GeomUtils {
 
     /*
 
-    bool isVertInsideNgon(Vertex &testVert, Polygon &ngon) {
+    bool isVertInsidepgon(Vertex &testVert, Polygon &pgon) {
 
     };
 
-    Polygon union2D(Polygon &ngon1, Polygon &ngon2) {
+    Polygon union2D(Polygon &pgon1, Polygon &pgon2) {
 
     };
 
-    Polygon intersection2D(Polygon &ngon1, Polygon &ngon2) {
+    Polygon intersection2D(Polygon &pgon1, Polygon &pgon2) {
 
     };
 
-    Polygon subtract2D(Polygon &ngon1, Polygon &ngon2) {
+    Polygon subtract2D(Polygon &pgon1, Polygon &pgon2) {
 
     };
 
