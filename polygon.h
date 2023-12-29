@@ -20,10 +20,20 @@ class Vertex {
         }
 
         Vertex() {};
+
+        Vertex operator- (Vertex& vert1) {
+            vector<double>* vert1Coords = vert1.getCoordinates();
+            double x = this->coords[0] - (*vert1Coords)[0];
+            double y = this->coords[1] - (*vert1Coords)[1];
+            Vertex newVert{x, y};
+            return newVert;
+        }
+        
         Vertex(double _x, double _y) {
             coords[0] = _x;
             coords[1] = _y;
         }
+
         ~Vertex() {};
 };
 

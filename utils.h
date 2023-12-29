@@ -9,6 +9,15 @@
 
 namespace GeomUtils {
 
+    // A simple struct to contain both the actual intersection point, and the
+    // validity of the intersection. This is required as the computed intersection
+    // could be the default (0, 0), and we need to ensure that any point is 
+    // accepted only if the determinant and point location is as intended.
+    struct intersectionResult {
+        bool isValid;
+        vector<double> intersection;
+    };
+
     // A general point location detection function applicable to any
     // type of points, and not just Vertex objects.
     bool isPointBetweenPoints(vector<double>* testPt, vector<double>* checkPoint1, vector<double>* checkPoint2) {
@@ -24,15 +33,6 @@ namespace GeomUtils {
             return false;
         }
     }
-
-    // A simple struct to contain both the actual intersection point, and the
-    // validity of the intersection. This is required as the computed intersection
-    // could be the default (0, 0), and we need to ensure that any point is 
-    // accepted only if the determinant and point location is as intended.
-    struct intersectionResult {
-        bool isValid;
-        vector<double> intersection;
-    };
 
     // A comprehensive generic intersection computation function to determine the 
     // intersection between two edges / lines. Function ensures that the computed
@@ -72,23 +72,73 @@ namespace GeomUtils {
         return result;
     }
 
-    /*
-    Polygon pgonBoolean(Polygon &p1, Polygon &p2, char boolType) {
+    bool isPointInsidePgon(Vertex& point, Polygon& pgon) {
+        int intersectionCount = 0;
+        vector<Vertex>* pgonVerts = &pgon.getVertices();
+        vector<double> pointCoords = (*point.getCoordinates());
+        for (int i = 0; i < pgon.getVertices().size(); i++) {
+            Vertex currVert = (*pgonVerts)[i];
+            Vertex nextVert = (i != pgonVerts->size() - 1) ? 
+                    (*pgonVerts)[i + 1] : (*pgonVerts)[0];
+            vector<double> coords1 = (*currVert.getCoordinates());
+            vector<double> coords2 = (*nextVert.getCoordinates());
+            Vertex extPoint{max(coords1[0], coords2[0]) * 2.0, pointCoords[1]};
+            intersectionResult intRes = computeIntersection(&currVert, &nextVert, &point, &extPoint);
+            if (intRes.isValid) {
+                intersectionCount += 1;
+            }
+        }
+        return intersectionCount % 2 == 1;
+    };
 
+    Polygon pgonBoolean(Polygon& pgon1, Polygon& pgon2, char boolType) {
+        Polygon retPgon;
+        if (boolType == 'U' || boolType == 'S' || boolType == 'I') {
+            vector<Vertex>* pgon1Vertices = &pgon1.getVertices();
+            vector<Vertex>* pgon2Vertices = &pgon2.getVertices();
+            for (int i = 0; i < pgon1Vertices->size(); i++) {
+                Vertex currVert = (*pgon1Vertices)[i];
+                Vertex nextVert = (i != pgon1Vertices->size() - 1) ? 
+                    (*pgon1Vertices)[i + 1] : (*pgon1Vertices)[0];
+                for (int j = 0; j < pgon2Vertices->size(); j++) {
+                    vector<double> intersection;
+                    Vertex currVert2 = (*pgon2Vertices)[j];
+                    Vertex nextVert2 = (j != pgon2Vertices->size() - 1) ? 
+                        (*pgon2Vertices)[j + 1] : (*pgon2Vertices)[0];
+                    intersectionResult result = computeIntersection(&currVert, &nextVert, 
+                                                        &currVert2, &nextVert2);
+                    if (result.isValid) {
+                        // perform desired boolean operation here
+                        switch(boolType) {
+                            case 'U':
+                            
+                            break;
+
+                            case 'S':
+
+                            break;
+
+                            case 'I':
+
+                            break;
+                        }
+                    }
+                }
+            }
+        } else {
+            // Invalid boolean type provided, terminate function.
+        }
+        return retPgon;
     }
-    */
     
     // Function that computes the intersection between to polygons, each having
     // any number of edges.
-    vector<vector<double>> computePgonIntersections(Polygon &pgon1, Polygon &pgon2) {
+    vector<vector<double>> computePgonIntersections(Polygon& pgon1, Polygon& pgon2) {
         vector<vector<double>> foundIntersections;
         vector<Vertex>* pgon1Vertices = &pgon1.getVertices();
         // using each edge of theW first polygon, and comparing with each
         // edge of the second polygon to determine intersections.
         for (int i = 0; i < pgon1Vertices->size(); i++) {
-            // we need to eliminate not intersecting edges in the second polygon
-            // from the intersection search algorithm for computation efficiency.
-            vector<int> edgesToEliminate;
             Vertex currVert = (*pgon1Vertices)[i];
             Vertex nextVert = (i != pgon1Vertices->size() - 1) ? 
                 (*pgon1Vertices)[i + 1] : (*pgon1Vertices)[0];
@@ -103,8 +153,6 @@ namespace GeomUtils {
                 if (result.isValid) {
                     foundIntersections.push_back(result.intersection);
                     cout << "Found intersection for: " + to_string(j) + "\n";
-                } else {
-                    edgesToEliminate.push_back(j);
                 }
             }
         }

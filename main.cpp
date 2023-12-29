@@ -26,7 +26,8 @@ int main() {
     for (int i = 0; i < intersections.size(); i++) {
         cout << to_string(intersections[i][0]) + ", " + to_string(intersections[i][1]) + "\n";
     }
-    
-    cout << "\n\n";
+    cout << "\n";
+
+    pointInsidePgonTests();
 
 };

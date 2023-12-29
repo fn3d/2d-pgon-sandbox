@@ -15,3 +15,21 @@ void intersectionTests() {
     cout << "(" + to_string(resultCoords[0]) + ", " + to_string(resultCoords[1]) + ")";
     */
 };
+
+void pointInsidePgonTests() {
+    
+    Polygon testPgon;
+    testPgon.addVertex(2, 4);
+    testPgon.addVertex(2, 6);
+    testPgon.addVertex(1, 6);
+    testPgon.addVertex(1, 4);
+
+    Vertex testPoint1{0, 0};
+    Vertex testPoint2{2.2, 4.5};
+    Vertex testPoint3{1.2, 5.8};
+
+    cout << isPointInsidePgon(testPoint1, testPgon) << "\n";
+    cout << isPointInsidePgon(testPoint2, testPgon) << "\n";
+    cout << isPointInsidePgon(testPoint3, testPgon) << "\n";
+    cout << "\n";
+}
