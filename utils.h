@@ -26,17 +26,21 @@ namespace GeomUtils {
     }
 
     // A simple struct to contain both the actual intersection point, and the
-    // computed determinant. This is required as the computed intersection
-    // could be the default (0, 0), and we need to ensure that any point
-    // is accepted only if the determinant is as intended.
+    // validity of the intersection. This is required as the computed intersection
+    // could be the default (0, 0), and we need to ensure that any point is 
+    // accepted only if the determinant and point location is as intended.
     struct intersectionResult {
-        double determinantCheck;
+        bool isValid;
         vector<double> intersection;
     };
 
+    // A comprehensive generic intersection computation function to determine the 
+    // intersection between two edges / lines. Function ensures that the computed
+    // point actually is colinear with the provided set prior to returning.
     intersectionResult computeIntersection(Vertex* edge1Vert1, Vertex* edge1Vert2, \
                                            Vertex* edge2Vert1, Vertex* edge2Vert2) {
         vector<double> intVert;
+        bool validity = false;
         vector<double> coords11 = (*edge1Vert1->getCoordinates());
         vector<double> coords12 = (*edge1Vert2->getCoordinates());
         vector<double> coords21 = (*edge2Vert1->getCoordinates());
@@ -52,17 +56,30 @@ namespace GeomUtils {
             double y = ((coords11[0] * coords12[1] - coords11[1] * coords12[0]) * 
                         (coords21[1] - coords22[1]) - (coords11[1] - coords12[1]) * 
                         (coords21[0] * coords22[1] - coords21[1] * coords22[0])) / determinant;
+            vector<double> tempPt{x, y};
             
-            intVert.push_back(x);
-            intVert.push_back(y);
+            if ((isPointBetweenPoints(&tempPt, &coords11, &coords12)) && 
+               (isPointBetweenPoints(&tempPt, &coords21, &coords22))) {
+                intVert.push_back(x);
+                intVert.push_back(y);
+                validity = true;
+            }
         };
 
         intersectionResult result;
-        result.determinantCheck = determinant;
+        result.isValid = validity;
         result.intersection = intVert;
         return result;
     }
+
+    /*
+    Polygon pgonBoolean(Polygon &p1, Polygon &p2, char boolType) {
+
+    }
+    */
     
+    // Function that computes the intersection between to polygons, each having
+    // any number of edges.
     vector<vector<double>> computePgonIntersections(Polygon &pgon1, Polygon &pgon2) {
         vector<vector<double>> foundIntersections;
         vector<Vertex>* pgon1Vertices = &pgon1.getVertices();
@@ -77,47 +94,22 @@ namespace GeomUtils {
                 (*pgon1Vertices)[i + 1] : (*pgon1Vertices)[0];
             vector<Vertex>* pgon2Vertices = &pgon2.getVertices();
             for (int j = 0; j < pgon2Vertices->size(); j++) {
-                //auto iterator = find(edgesToEliminate.begin(), edgesToEliminate.end(), j);
-                //if (iterator == edgesToEliminate.end()) {
                 vector<double> intersection;
                 Vertex currVert2 = (*pgon2Vertices)[j];
                 Vertex nextVert2 = (j != pgon2Vertices->size() - 1) ? 
                     (*pgon2Vertices)[j + 1] : (*pgon2Vertices)[0];
                 intersectionResult result = computeIntersection(&currVert, &nextVert, 
                                                     &currVert2, &nextVert2);
-                if ((result.determinantCheck != 0.0) && 
-                    (isPointBetweenPoints(&result.intersection, currVert.getCoordinates(), nextVert.getCoordinates())) &&
-                    (isPointBetweenPoints(&result.intersection, currVert2.getCoordinates(), nextVert2.getCoordinates()))) {
+                if (result.isValid) {
                     foundIntersections.push_back(result.intersection);
                     cout << "Found intersection for: " + to_string(j) + "\n";
                 } else {
                     edgesToEliminate.push_back(j);
                 }
-                //}
             }
         }
         return foundIntersections;
-    };
-
-    /*
-
-    bool isVertInsidepgon(Vertex &testVert, Polygon &pgon) {
-
-    };
-
-    Polygon union2D(Polygon &pgon1, Polygon &pgon2) {
-
-    };
-
-    Polygon intersection2D(Polygon &pgon1, Polygon &pgon2) {
-
-    };
-
-    Polygon subtract2D(Polygon &pgon1, Polygon &pgon2) {
-
-    };
-
-    */
+    }
 }
 
 #endif
