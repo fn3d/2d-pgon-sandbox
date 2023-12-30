@@ -24,10 +24,12 @@ int main() {
     cout << "Number of intersections: " + to_string(intersections.size());
     cout << "\n\n";
     for (int i = 0; i < intersections.size(); i++) {
-        cout << to_string(intersections[i][0]) + ", " + to_string(intersections[i][1]) + "\n";
+        cout << "Computed intersection: " + to_string(intersections[i][0]) + ", " + to_string(intersections[i][1]) + "\n";
     }
     cout << "\n";
 
     pointInsidePgonTests();
+
+    Polygon testPgon = rect + poly;
 
 };

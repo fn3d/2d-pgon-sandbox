@@ -45,6 +45,15 @@ class Polygon {
         Polygon() {};
         ~Polygon() {};
 
+        // polygons boolean union
+        Polygon operator+ (const Polygon& pgon) const;
+
+        // polygons boolean subtraction
+        Polygon operator- (const Polygon& pgon) const;
+
+        // polygons boolean intersection
+        Polygon operator& (const Polygon& pgon) const;
+
         int getVertexCount() const {
             return pgonVertices.size();
         }

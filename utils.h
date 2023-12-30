@@ -20,7 +20,7 @@ namespace GeomUtils {
 
     // A general point location detection function applicable to any
     // type of points, and not just Vertex objects.
-    bool isPointBetweenPoints(vector<double>* testPt, vector<double>* checkPoint1, vector<double>* checkPoint2) {
+    static inline bool isPointBetweenPoints(vector<double>* testPt, vector<double>* checkPoint1, vector<double>* checkPoint2) {
         double pt1Coords[2] = {(*checkPoint1)[0], (*checkPoint1)[1]};
         double pt2Coords[2] = {(*checkPoint2)[0], (*checkPoint2)[1]};
         double testPtCoords[2] = {(*testPt)[0], (*testPt)[1]};
@@ -37,7 +37,7 @@ namespace GeomUtils {
     // A comprehensive generic intersection computation function to determine the 
     // intersection between two edges / lines. Function ensures that the computed
     // point actually is colinear with the provided set prior to returning.
-    intersectionResult computeIntersection(Vertex* edge1Vert1, Vertex* edge1Vert2, \
+    static inline intersectionResult computeIntersection(Vertex* edge1Vert1, Vertex* edge1Vert2, \
                                            Vertex* edge2Vert1, Vertex* edge2Vert2) {
         vector<double> intVert;
         bool validity = false;
@@ -72,7 +72,7 @@ namespace GeomUtils {
         return result;
     }
 
-    bool isPointInsidePgon(Vertex& point, Polygon& pgon) {
+    static inline bool isPointInsidePgon(Vertex& point, Polygon& pgon) {
         int intersectionCount = 0;
         vector<Vertex>* pgonVerts = &pgon.getVertices();
         vector<double> pointCoords = (*point.getCoordinates());
@@ -91,7 +91,7 @@ namespace GeomUtils {
         return intersectionCount % 2 == 1;
     };
 
-    Polygon pgonBoolean(Polygon& pgon1, Polygon& pgon2, char boolType) {
+    static inline Polygon pgonBoolean(Polygon& pgon1, Polygon& pgon2, char boolType) {
         Polygon retPgon;
         if (boolType == 'U' || boolType == 'S' || boolType == 'I') {
             vector<Vertex>* pgon1Vertices = &pgon1.getVertices();
@@ -111,7 +111,11 @@ namespace GeomUtils {
                         // perform desired boolean operation here
                         switch(boolType) {
                             case 'U':
-                            
+                                // for the current intersection, determine whether the
+                                // vertex before or after the point are inside or outside
+                                // any polygon. If inside, then mark it for removal. If 
+                                // outside, then add it to the new polygon at the correct
+                                // location in the vector.
                             break;
 
                             case 'S':
@@ -133,7 +137,7 @@ namespace GeomUtils {
     
     // Function that computes the intersection between to polygons, each having
     // any number of edges.
-    vector<vector<double>> computePgonIntersections(Polygon& pgon1, Polygon& pgon2) {
+    static inline vector<vector<double>> computePgonIntersections(Polygon& pgon1, Polygon& pgon2) {
         vector<vector<double>> foundIntersections;
         vector<Vertex>* pgon1Vertices = &pgon1.getVertices();
         // using each edge of theW first polygon, and comparing with each
@@ -152,7 +156,7 @@ namespace GeomUtils {
                                                     &currVert2, &nextVert2);
                 if (result.isValid) {
                     foundIntersections.push_back(result.intersection);
-                    cout << "Found intersection for: " + to_string(j) + "\n";
+                    cout << "Found intersection for vertex: " + to_string(j) + "\n";
                 }
             }
         }
